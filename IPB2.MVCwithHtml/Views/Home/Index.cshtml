@@ -1,0 +1,132 @@
+@model ShoeStoreViewModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<section class="hero">
+    <div class="hero-content">
+        <p class="eyebrow">New season footwear</p>
+        <h1>Slice Shoes system for stylish, comfortable everyday steps.</h1>
+        <p class="hero-copy">
+            Browse featured shoes, compare styles, and send a quick order request from one simple MVC page.
+        </p>
+        <div class="hero-actions">
+            <a class="btn btn-primary" href="#collection">Shop collection</a>
+            <a class="btn btn-secondary" href="#order">Request order</a>
+        </div>
+    </div>
+    <div class="hero-card" aria-label="Featured shoe illustration">
+        <div class="shoe-visual large">
+            <span class="shoe-sole"></span>
+            <span class="shoe-body"></span>
+            <span class="shoe-lace one"></span>
+            <span class="shoe-lace two"></span>
+        </div>
+        <div>
+            <strong>Slice Runner Pro</strong>
+            <p>Responsive foam • breathable mesh • road-ready grip</p>
+        </div>
+    </div>
+</section>
+
+<section class="stats" aria-label="Store highlights">
+    <article>
+        <strong>4</strong>
+        <span>Curated categories</span>
+    </article>
+    <article>
+        <strong>24h</strong>
+        <span>Order response</span>
+    </article>
+    <article>
+        <strong>100%</strong>
+        <span>Comfort focused</span>
+    </article>
+</section>
+
+<section id="collection" class="section">
+    <div class="section-heading">
+        <p class="eyebrow">Collection</p>
+        <h2>Choose your Slice style</h2>
+    </div>
+
+    <div class="product-grid">
+        @foreach (var product in Model.Products)
+        {
+            <article class="product-card">
+                @if (product.IsFeatured)
+                {
+                    <span class="badge">Featured</span>
+                }
+                <div class="mini-shoe" style="--shoe-color:@product.Color; --accent-color:@product.AccentColor" aria-hidden="true">
+                    <span></span>
+                </div>
+                <p class="category">@product.Category</p>
+                <h3>@product.Name</h3>
+                <p>@product.Description</p>
+                <div class="price-row">
+                    <strong>@product.Price.ToString("C")</strong>
+                    <a href="#order">Order now</a>
+                </div>
+            </article>
+        }
+    </div>
+</section>
+
+<section id="order" class="section order-section">
+    <div>
+        <p class="eyebrow">Quick order</p>
+        <h2>Reserve your pair</h2>
+        <p>
+            Send us your preferred style and size. The Slice Shoes team will confirm stock, payment, and delivery details.
+        </p>
+        <ul class="check-list">
+            <li>Sizes from US 5 to US 13</li>
+            <li>Running, lifestyle, trail, and training shoes</li>
+            <li>Friendly support before purchase</li>
+        </ul>
+    </div>
+
+    <form class="order-form" asp-controller="Home" asp-action="Order" method="post">
+        @Html.AntiForgeryToken()
+        @if (Model.OrderSubmitted)
+        {
+            <div class="success-message">Thanks! Your Slice Shoes request was sent successfully.</div>
+        }
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+        <label asp-for="Order.CustomerName">Customer name</label>
+        <input asp-for="Order.CustomerName" placeholder="Enter your name" />
+        <span asp-validation-for="Order.CustomerName"></span>
+
+        <label asp-for="Order.Email">Email</label>
+        <input asp-for="Order.Email" placeholder="name@example.com" />
+        <span asp-validation-for="Order.Email"></span>
+
+        <label asp-for="Order.ShoeStyle">Shoe style</label>
+        <select asp-for="Order.ShoeStyle">
+            <option value="">Select a shoe</option>
+            @foreach (var product in Model.Products)
+            {
+                <option value="@product.Name">@product.Name</option>
+            }
+        </select>
+        <span asp-validation-for="Order.ShoeStyle"></span>
+
+        <label asp-for="Order.Size">Size</label>
+        <select asp-for="Order.Size">
+            <option value="">Select size</option>
+            @for (var size = 5; size <= 13; size++)
+            {
+                <option value="US @size">US @size</option>
+            }
+        </select>
+        <span asp-validation-for="Order.Size"></span>
+
+        <label asp-for="Order.Notes">Notes</label>
+        <textarea asp-for="Order.Notes" rows="4" placeholder="Color preference, delivery area, or questions"></textarea>
+        <span asp-validation-for="Order.Notes"></span>
+
+        <button class="btn btn-primary" type="submit">Submit request</button>
+    </form>
+</section>
