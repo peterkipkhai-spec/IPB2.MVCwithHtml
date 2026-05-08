@@ -1,0 +1,6 @@
+@IPB2.MVCwithHtml_HostAddress = http://localhost:5174
+
+GET {{IPB2.MVCwithHtml_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
